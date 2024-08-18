@@ -1,0 +1,11 @@
+{
+  "name": "Cropshot",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "A Chrome extension that allows users to choose what to share.",
+  "permissions": ["desktopCapture", "tabs", "downloads"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "assets/crop.png"
+  }
+}
