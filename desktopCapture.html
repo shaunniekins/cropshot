@@ -1,12 +1,45 @@
 ﻿<!-- desktopCapture.html -->
 
 <html>
-<body>
-  <input type="button" id="capture" value="Capture">
-  <select id="captureType">
-    <option value="photo">Photo</option>
-    <option value="video">Video</option>
-  </select>
-  <script src="desktopCapture.js"></script>
-</body>
+  <head>
+    <title>Cropshot</title>
+    <link href="tailwind.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <style>
+      .custom-select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9l-7 7-7-7"></path></svg>');
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1.5em;
+      }
+    </style>
+  </head>
+  <body
+    class="h-full w-full p-10 flex flex-col justify-center items-center"
+  >
+    <h1 class="text-2xl font-semibold">Share Your Screen</h1>
+    <div class="w-full mt-8 flex items-center justify-center gap-5">
+      <select
+        id="captureType"
+        class="custom-select w-1/4 h-12 px-3 pr-10 rounded-xl bg-white border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="photo" class="bg-white text-gray-700">Photo</option>
+        <option value="video" class="bg-white text-gray-700">Video</option>
+      </select>
+      <button
+        id="capture"
+        class="w-1/4 h-12 flex justify-center items-center gap-1 px-3 rounded-xl bg-white border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <span class="material-symbols-outlined"> capture </span>
+        Start Capture
+      </button>
+    </div>
+    <script src="desktopCapture.js"></script>
+  </body>
 </html>
