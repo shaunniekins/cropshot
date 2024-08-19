@@ -1,4 +1,4 @@
-// settings.js
+// DesktopCaptureFiles/locationSettings.js
 
 // Store the initial HTML content of the first div
 const initialContent = document.querySelector("body > div").innerHTML;
