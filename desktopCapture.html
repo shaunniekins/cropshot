@@ -1,79 +1,199 @@
-﻿<!-- desktopCapture.html -->
-
-<html>
+﻿<!DOCTYPE html>
+<!-- desktopCapture.html -->
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cropshot</title>
     <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
-    <link href="tailwind.css" rel="stylesheet" />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="preload"
+      href="/assets/fonts/archivo-display-62-800.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="preload"
+      href="/assets/fonts/archivo-body-400-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
-    <style>
-      .custom-select {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9l-7 7-7-7"></path></svg>');
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 1.5em;
-      }
-
-      button {
-        cursor: pointer;
-      }
-    </style>
+    <link rel="stylesheet" href="/styles/cropshot.css" />
   </head>
-  <body class="h-full w-full p-10 flex flex-col justify-start items-end">
-    <!-- Card -->
-    <div class="w-72 bg-gray-800 rounded-3xl p-5 text-white">
-      <!-- here below will change the view when settings button is clicked -->
-      <div class="w-full flex justify-between items-center">
-        <div class="flex items-center gap-1">
-          <!-- <span class="material-symbols-outlined" class="h-5 w-5 text-white">
-            capture
-          </span> -->
-          <img
-            src="/assets/crop-white.png"
-            alt="Crop Logo"
-            class="h-5 w-5 text-white"
-          />
-          <h1 class="font-bold text-xl">Cropshot</h1>
+  <body>
+    <header class="topbar">
+      <div class="brand">Cropshot<span class="brand-dot" aria-hidden="true"></span></div>
+      <button id="settingsButton" class="text-button" type="button">
+        Settings
+      </button>
+    </header>
+
+    <main class="layout">
+      <!-- Left: setup steps -->
+      <section class="setup" aria-labelledby="modeHeadline">
+        <h1 id="modeHeadline" class="headline">
+          Record your screen, <em>talk over it.</em>
+        </h1>
+        <p id="modeLead" class="lead">
+          Your screen, your voice and a bubble of you, saved as a video file.
+        </p>
+
+        <ol class="steps">
+          <li class="field">
+            <p class="eyebrow" id="modeLabel">
+              <span class="step-no" aria-hidden="true"></span>What do you want to make?
+            </p>
+            <div class="segmented" role="group" aria-labelledby="modeLabel">
+              <button id="tabVideo" type="button" data-type="video" aria-pressed="true">
+                Record a video
+              </button>
+              <button id="tabPhoto" type="button" data-type="photo" aria-pressed="false">
+                Take a screenshot
+              </button>
+            </div>
+            <input type="hidden" id="captureType" value="video" />
+          </li>
+
+          <li class="field hidden" data-field="screenshot">
+            <label class="eyebrow" for="screenshotType">
+              <span class="step-no" aria-hidden="true"></span>How much do you want?
+            </label>
+            <select id="screenshotType" class="select" aria-describedby="screenshotHelp">
+              <option value="fullscreen">Everything I share</option>
+              <option value="custom">Only an area I select</option>
+            </select>
+            <p id="screenshotHelp" class="help">
+              Pick a screen, window or tab next. With an area, you drag over the
+              part to keep before it saves.
+            </p>
+          </li>
+
+          <li class="field" data-field="camera">
+            <label class="eyebrow" for="cameraSelect">
+              <span class="step-no" aria-hidden="true"></span>Camera
+            </label>
+            <select id="cameraSelect" class="select" aria-describedby="cameraHelp">
+              <option value="noCamera">Camera off</option>
+            </select>
+            <p id="cameraHelp" class="help">
+              Adds a round bubble of you to the corner of the video.
+            </p>
+            <div id="cameraPermission" class="permission hidden" role="status">
+              <p id="cameraPermissionText"></p>
+              <button id="cameraPermissionButton" class="outline-button" type="button"></button>
+            </div>
+          </li>
+
+          <li class="field hidden" data-field="background">
+            <label class="eyebrow" for="backgroundColorSelect">Background behind you</label>
+            <select id="backgroundColorSelect" class="select">
+              <option value="#000000">Black</option>
+              <option value="#ffffff">White</option>
+              <option value="#0066cc">Blue</option>
+              <option value="#00cc66">Green</option>
+              <option value="#cc0066">Magenta</option>
+              <option value="#ff6600">Orange</option>
+              <option value="#ffcc00">Yellow</option>
+              <option value="#cc6600">Brown</option>
+            </select>
+          </li>
+
+          <li class="field" data-field="microphone">
+            <label class="eyebrow" for="microphoneSelect">
+              <span class="step-no" aria-hidden="true"></span>Microphone
+            </label>
+            <select id="microphoneSelect" class="select" aria-describedby="micHelp">
+              <option value="noMic">Microphone off</option>
+            </select>
+            <div class="meter" aria-hidden="true"><span id="micLevel"></span></div>
+            <p id="micHelp" class="help">
+              Say something: the bar moves when this mic hears you.
+            </p>
+            <div id="microphonePermission" class="permission hidden" role="status">
+              <p id="microphonePermissionText"></p>
+              <button id="microphonePermissionButton" class="outline-button" type="button"></button>
+            </div>
+          </li>
+        </ol>
+
+        <button id="capture" class="primary-button" type="button">
+          Choose screen and record
+        </button>
+        <p class="footnote">
+          Files save to Chrome's downloads folder. Nothing is uploaded.
+        </p>
+      </section>
+
+      <!-- Right: live preview and what happens next -->
+      <aside class="preview" aria-label="Preview">
+        <p class="eyebrow">Preview</p>
+        <div id="stage" class="stage">
+          <p id="stagePlaceholder" class="stage-placeholder"></p>
+          <div id="liveCameraPreviewContainer" class="stage-bubble hidden">
+            <video id="liveCameraVideo" autoplay muted playsinline></video>
+          </div>
         </div>
-        <button
-          id="settingsButton"
-          class="material-symbols-outlined h-5 w-5 text-white"
-        >
-          settings
+        <p class="eyebrow">What happens next</p>
+        <ol id="nextSteps" class="next-steps" aria-live="polite"></ol>
+      </aside>
+    </main>
+
+    <!-- Settings -->
+    <dialog id="settingsDialog" class="dialog" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle" class="dialog-title">Settings</h2>
+      <div class="dialog-section">
+        <p class="eyebrow">Where files go</p>
+        <p class="help">
+          Videos (.webm) and screenshots (.png) save to Chrome's downloads
+          folder. To choose a folder every time, turn on "Ask where to save
+          each file before downloading" in Chrome.
+        </p>
+        <button id="openDownloadSettings" class="outline-button" type="button">
+          Open Chrome download settings
         </button>
       </div>
-      <div class="w-full mt-5 mb-2 gap-4 flex flex-col">
-        <select
-          id="captureType"
-          class="custom-select h-12 px-4 pr-10 text-lg rounded-3xl bg-white text-gray-700 focus:outline-none cursor-pointer"
-        >
-          <option value="photo" class="bg-white text-gray-700">Photo</option>
-          <option value="video" class="bg-white text-gray-700">Video</option>
-        </select>
-        <select
-          id="microphoneSelect"
-          class="custom-select h-12 px-4 pr-10 text-lg rounded-3xl bg-white text-gray-700 focus:outline-none cursor-pointer hidden"
-        >
-          <option value="noMic" class="bg-white text-gray-700">
-            No Microphone
-          </option>
-        </select>
-        <button
-          id="capture"
-          class="h-12 px-4 rounded-3xl bg-purple-500 text-white text-lg focus:outline-none cursor-pointer"
-        >
-          Start Capture
+      <div class="dialog-section">
+        <p class="eyebrow">Camera and microphone access</p>
+        <p class="help">
+          If Chrome blocked access, allow it again in the site settings.
+        </p>
+        <button id="openSiteSettings" class="outline-button" type="button">
+          Open site settings
         </button>
+      </div>
+      <div class="dialog-actions">
+        <button id="closeSettings" class="primary-button compact" type="button">
+          Done
+        </button>
+      </div>
+    </dialog>
+
+    <!-- Crop modal -->
+    <div
+      id="cropModal"
+      class="crop-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cropTitle"
+    >
+      <div class="crop-panel">
+        <h2 id="cropTitle" class="eyebrow">Select the area to keep</h2>
+        <p class="help">
+          Drag over the screenshot. Download saves only that area, or the
+          whole screenshot if nothing is selected.
+        </p>
+        <div class="crop-area">
+          <canvas id="cropCanvas" class="crop-canvas"></canvas>
+          <div id="cropSelection" class="crop-selection hidden"></div>
+        </div>
+        <div class="crop-actions">
+          <button id="cancelCrop" class="outline-button" type="button">Cancel</button>
+          <button id="confirmCrop" class="primary-button compact" type="button">
+            Download
+          </button>
+        </div>
       </div>
     </div>
 
